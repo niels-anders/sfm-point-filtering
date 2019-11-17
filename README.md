@@ -9,6 +9,7 @@ code from the paper: https://www.mdpi.com/2504-446X/3/3/61
 
 ```bash
 python3 -m virtualenv venv
+source venv/bin/activate
 ```
 
 - install requirements.txt with 
