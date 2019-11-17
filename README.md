@@ -29,7 +29,12 @@ run example with:
 python main.py filter=isl_vi
 ```
 
-Optional filters are `isl` (iterative surface lowering), `vi` (vegetation index), and a combination of both `isl_vi`
+Optional filters are:
+
+-`isl` (iterative surface lowering)
+- `vi` (vegetation index), 
+- `isl_vi`, a combination of both
+
 Optional arguments:
 
 - folder='location to folder with las files'. Default=`example-data/`
