@@ -1,7 +1,6 @@
 wheel==0.33.6
 astroid==2.3.3
 cycler==0.10.0
-GDAL==2.2.3
 isort==4.3.21
 kiwisolver==1.1.0
 laspy==1.6.0
@@ -22,3 +21,4 @@ six==1.13.0
 termcolor==1.1.0
 typed-ast==1.4.0
 wrapt==1.11.2
+GDAL==2.2.3

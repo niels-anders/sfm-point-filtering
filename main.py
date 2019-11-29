@@ -10,7 +10,7 @@ from termcolor import colored
 import pylab as plt
 
 from PointFiltering import LazData, VegetationIndices, Filter, Grid, PlotTools
-
+from PointFiltering.Helpers import saveimg, savergb
 
 def run(filter, **kwargs):
     """ Run point filter
@@ -26,6 +26,8 @@ def run(filter, **kwargs):
     RES = kwargs.get('res', 0.25)
     VI = kwargs.get('vi', 'exg')
     PLOT = kwargs.get('plot', False)
+    wkt = kwargs.get('wkt', '')
+
     if VI == 'exg':
         THRESHOLD = kwargs.get('threshold', 0.01)
     elif VI == 'vvi':
@@ -182,6 +184,14 @@ def run(filter, **kwargs):
         )
         print(colored("done", OK))
 
+    # save images
+    saveimg(GRID, GRID.dtm, 'out/dtm.tif', wkt=wkt)
+    saveimg(GRID, GRID.dsm, 'out/dsm.tif', wkt=wkt)
+    saveimg(GRID, GRID.dsm-GRID.dtm, 'out/chm.tif', wkt=wkt)
+    saveimg(GRID, GRID.raster_vi, 'out/vi.tif', wkt=wkt)
+    savergb(GRID, GRID.rgb, 'out/rgb.tif', wkt=wkt)
+
+
 if __name__ == "__main__":
     args = sys.argv
 
@@ -194,11 +204,12 @@ if __name__ == "__main__":
             key = arg.split('=')[0]
             value = arg.split('=')[1]
             if 'filter' in arg:
-                filter = value
+                filter = value.lower()
             else:
                 kwargs[key] = value
     # use default if not provided
     if 'filter' not in locals():
         filter = 'isl_vi'
-    run(filter=filter, plot=True, **kwargs)
+    wkt = 'PROJCS["WGS 84 / UTM zone 32N",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",9],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],AUTHORITY["EPSG","32632"],AXIS["Easting",EAST],AXIS["Northing",NORTH]]'
+    run(filter=filter, plot=True, wkt=wkt, **kwargs)
 

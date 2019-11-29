@@ -87,7 +87,7 @@ def correction(grid, gps_data, vi_threshold, s_err = None):
     return grid, dtm_diff_before, dtm_diff_after
 
 
-def savergb(grid, raster, filename):
+def savergb(grid, raster, filename, wkt=''):
     geotransform = (grid.grid_x.min() - grid.res / 2, grid.res, 0.0, grid.grid_y.max() + grid.res / 2, 0.0, -grid.res)
     rows, cols = grid.grid_x.shape
 
@@ -118,6 +118,33 @@ def savergb(grid, raster, filename):
     out_band.GetStatistics(0, 1)
     # georeference
     out_data.SetGeoTransform(geotransform)
+    out_data.SetProjection(wkt)
     out_band.FlushCache()
+    out_data = None
+
+
+def saveimg(grid, raster, filename, wkt=''):
+    geotransform = (grid.grid_x.min() - grid.res / 2, grid.res, 0.0, grid.grid_y.max() + grid.res / 2, 0.0, -grid.res)
+    rows, cols = grid.grid_x.shape
+
+    # change NaN to -999 nodata value
+    raster[np.isnan(raster)] = -999
+    # get driver
+    driver = gdal.GetDriverByName('GTiff')
+    # create file
+    out_data = driver.Create(filename, cols, rows, 1, gdal.GDT_Float32)
+    # get band to write to
+    out_band = out_data.GetRasterBand(1)
+    # write array
+    out_band.WriteArray(raster, 0, 0)
+    out_band.FlushCache()
+    # set nodata
+    out_band.SetNoDataValue(-999)
+    # calculate statistics
+    out_band.GetStatistics(0,1)
+    # georeference
+
+    out_data.SetGeoTransform(geotransform)
+    out_data.SetProjection(wkt)
     out_data = None
 
